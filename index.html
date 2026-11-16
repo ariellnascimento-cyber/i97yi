@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <!-- =========================================================================
+       DISCIPLINA: 1º Ano — Programação de Jogos Digitais
+       TEMA: Saúde e Reabilitação (Saúde Física, Mental, Social e Espiritual)
+       ALUNO(A): Ariell Santana do Nascimento
+       ARQUIVO: Central Interativa de Testes, Visualização, Cópia e Download
+  ========================================================================== -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Central de Testes — Ariell Santana do Nascimento (1º Ano)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background-color: #030712;
+      color: #f8fafc;
+      overflow: hidden;
+    }
+    @keyframes popToast {
+      0% { opacity: 0; transform: translate(-50%, -14px) scale(0.95); }
+      100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+    }
+    .toast-visible {
+      animation: popToast 0.2s ease-out forwards;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="flex flex-col h-screen w-screen bg-gray-950 text-slate-100">
+
+  <!-- =======================================================================
+       NOTIFICAÇÃO VISUAL FLUTUANTE (FEEDBACK DE CÓPIA E DOWNLOAD)
+  ======================================================================== -->
+  <div id="toastBanner" role="status" aria-live="polite" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 hidden rounded-2xl border-2 border-emerald-400 bg-emerald-950/95 px-5 py-2.5 text-xs sm:text-sm font-extrabold text-emerald-100 shadow-2xl backdrop-blur-md">
+    <span id="toastMessage">✅ Código copiado!</span>
+  </div>
+
+  <!-- =======================================================================
+       BARRA SUPERIOR COMPACTA (DARK MODE)
+  ======================================================================== -->
+  <header class="shrink-0 w-full bg-slate-950 border-b border-slate-800 px-3 py-2 shadow-xl z-20">
+    <div class="max-w-[1600px] mx-auto flex flex-col xl:flex-row xl:items-center xl:justify-between gap-2">
+
+      <!-- Identificação Oficial + Botões de Ação (Copiar, Ver Código, Baixar) -->
+      <div class="flex flex-wrap items-center justify-between xl:justify-start gap-2">
+        <div class="flex items-center gap-2 bg-slate-900/95 border border-slate-700/80 rounded-xl px-3 py-1.5">
+          <span class="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+          <span class="text-[11px] sm:text-xs font-extrabold tracking-tight text-slate-100">
+            Ariell Santana do Nascimento <span class="text-slate-500">•</span> <span class="text-sky-300">1º Ano — Programação de Jogos Digitais</span> <span class="text-slate-500">•</span> <span class="text-emerald-300">Saúde e Reabilitação</span>
+          </span>
+        </div>
+
+        <div class="flex items-center gap-1.5">
+          <button
+            id="btnCopyHeader"
+            onclick="copyActiveCode()"
+            class="rounded-xl bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-extrabold px-3 py-1.5 text-xs transition cursor-pointer shadow-md flex items-center gap-1"
+          >
+            📋 Copiar Código HTML
+          </button>
+
+          <button
+            id="btnViewCode"
+            onclick="openCodeModal()"
+            class="rounded-xl bg-indigo-500/20 hover:bg-indigo-500/30 active:scale-95 border border-indigo-400/60 text-indigo-200 font-extrabold px-3 py-1.5 text-xs transition cursor-pointer flex items-center gap-1"
+          >
+            👁️ Ver Código
+          </button>
+
+          <button
+            id="btnDownloadHeader"
+            onclick="downloadActiveCode()"
+            class="rounded-xl bg-sky-500/20 hover:bg-sky-500/30 active:scale-95 border border-sky-400/60 text-sky-200 font-extrabold px-3 py-1.5 text-xs transition cursor-pointer flex items-center gap-1"
+          >
+            ⬇️ Baixar .HTML
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 Abas para Alternar Instantaneamente entre os Jogos -->
+      <nav aria-label="Navegação entre os 4 Jogos" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5 xl:pb-0">
+        <button id="tab1" onclick="selectGame(1)" class="shrink-0 rounded-xl px-3 py-1.5 text-xs font-extrabold border transition cursor-pointer">
+          🏃 1. Saúde Física
+        </button>
+        <button id="tab2" onclick="selectGame(2)" class="shrink-0 rounded-xl px-3 py-1.5 text-xs font-extrabold border transition cursor-pointer">
+          🧠 2. Saúde Mental
+        </button>
+        <button id="tab3" onclick="selectGame(3)" class="shrink-0 rounded-xl px-3 py-1.5 text-xs font-extrabold border transition cursor-pointer">
+          🤝 3. Saúde Social
+        </button>
+        <button id="tab4" onclick="selectGame(4)" class="shrink-0 rounded-xl px-3 py-1.5 text-xs font-extrabold border transition cursor-pointer">
+          ✨ 4. Saúde Espiritual
+        </button>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- =======================================================================
+       ÁREA PRINCIPAL DO IFRAME (RENDERIZA AO VIVO O JOGO SELECIONADO)
+  ======================================================================== -->
+  <main class="flex-1 w-full relative overflow-hidden bg-black">
+    <iframe
+      id="liveGameFrame"
+      title="Visualização ao Vivo do Jogo Selecionado"
+      class="w-full h-full border-0 block"
+      sandbox="allow-scripts allow-same-origin"
+    ></iframe>
+  </main>
+
+  <!-- =======================================================================
+       MODAL VISUALIZADOR E COPIADOR DE CÓDIGO HTML COMPLETO
+  ======================================================================== -->
+  <div id="codeModal" class="fixed inset-0 z-40 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6">
+    <div class="w-full max-w-4xl max-h-[90vh] bg-slate-950 border-2 border-slate-700 rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+      <!-- Cabeçalho do Modal -->
+      <div class="flex flex-wrap items-center justify-between gap-2 px-4 py-3 bg-slate-900 border-b border-slate-800">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-sky-400">Código-Fonte Independente</span>
+          <h2 id="modalFileTitle" class="text-sm sm:text-base font-extrabold text-slate-100">jogo1_saude_fisica.html</h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <button
+            onclick="copyActiveCode()"
+            class="rounded-xl bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-extrabold px-3.5 py-2 text-xs transition cursor-pointer"
+          >
+            📋 Copiar Código
+          </button>
+          <button
+            onclick="selectModalTextarea()"
+            class="rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 font-bold px-3 py-2 text-xs transition cursor-pointer"
+          >
+            🎯 Selecionar Tudo
+          </button>
+          <button
+            onclick="downloadActiveCode()"
+            class="rounded-xl bg-sky-500/20 hover:bg-sky-500/30 border border-sky-400/60 text-sky-200 font-bold px-3 py-2 text-xs transition cursor-pointer"
+          >
+            ⬇️ Baixar .HTML
+          </button>
+          <button
+            onclick="closeCodeModal()"
+            aria-label="Fechar janela de código"
+            class="rounded-xl bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/50 text-rose-200 font-extrabold px-3 py-2 text-xs transition cursor-pointer"
+          >
+            ✕ Fechar
+          </button>
+        </div>
+      </div>
+
+      <!-- Área de Texto com o Código HTML Completo -->
+      <div class="flex-1 p-3 sm:p-4 overflow-hidden flex flex-col">
+        <textarea
+          id="modalCodeArea"
+          readonly
+          spellcheck="false"
+          class="w-full flex-1 min-h-[320px] bg-gray-950 text-emerald-300 font-mono text-xs p-3.5 rounded-xl border border-slate-800 focus:outline-none focus:border-emerald-500 resize-none leading-relaxed"
+        ></textarea>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // BANCO DOS 4 JOGOS COMPLETOS E INDEPENDENTES (SEM MENÇÃO A VALOR DE NOTA)
+    // =========================================================================
+    const GAMES = {
+      1: {
+        id: 1,
+        fileName: "jogo1_saude_fisica.html",
+        title: "1. Saúde Física (BioHUD)",
+        activeClass: "bg-emerald-500 text-slate-950 border-emerald-300 shadow-lg shadow-emerald-500/25",
+        inactiveClass: "bg-emerald-950/50 text-emerald-300 border-emerald-700/60 hover:bg-emerald-900/60",
+        html: `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <!-- =========================================================================
+       DISCIPLINA: 1º Ano — Programação de Jogos Digitais
+       TEMA: Saúde e Reabilitação — Jogo 1: Saúde Física e Reabilitação Motora
+       ALUNO(A): Ariell Santana do Nascimento
+  ========================================================================== -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BioHUD - Saúde Física | Ariell Santana do Nascimento</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', Courier, monospace; }
+    body {
+      background: radial-gradient(circle at top right, #092418, #040d09 75%);
+      color: #dcfce7;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+    .split-arena {
+      width: 100%;
+      max-width: 920px;
+      display: grid;
+      grid-template-columns: 270px 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 740px) {
+      .split-arena { grid-template-columns: 1fr; }
+    }
+    aside {
+      background: #081c14;
+      border: 2px solid #10b981;
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 0 28px rgba(16, 185, 129, 0.18);
+    }
+    main {
+      background: #0b241a;
+      border: 2px solid #34d399;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 0 32px rgba(16, 185, 129, 0.22);
+    }
+    .bio-badge {
+      background: #064e3b;
+      color: #a7f3d0;
+      border: 1px solid #10b981;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: bold;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+    h1 { color: #34d399; font-size: 1.45rem; margin-bottom: 8px; }
+    .hp-track {
+      height: 14px;
+      background: #022c22;
+      border: 1px solid #10b981;
+      border-radius: 5px;
+      overflow: hidden;
+      margin: 6px 0 14px;
+    }
+    .hp-fill {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #10b981, #a3e635);
+      transition: width 0.35s ease;
+    }
+    .svg-clock {
+      position: relative;
+      width: 96px;
+      height: 96px;
+      margin: 10px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .svg-clock svg { transform: rotate(-90deg); width: 96px; height: 96px; }
+    .svg-clock circle { fill: none; stroke-width: 8; }
+    .ring-bg { stroke: #064e3b; }
+    .ring-fg {
+      stroke: #a3e635;
+      stroke-dasharray: 251.2;
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 0.1s linear;
+    }
+    .clock-label { position: absolute; font-size: 1.2rem; font-weight: bold; color: #a3e635; }
+    button { cursor: pointer; border-radius: 10px; font-weight: bold; transition: 0.18s; }
+    button:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.08); }
+    .btn-exec {
+      background: linear-gradient(135deg, #10b981, #a3e635);
+      color: #022c22;
+      border: none;
+      padding: 13px 16px;
+      font-size: 0.96rem;
+      width: 100%;
+      margin-top: 8px;
+    }
+    .btn-free {
+      background: transparent;
+      color: #a3e635;
+      border: 2px solid #a3e635;
+      padding: 11px 16px;
+      font-size: 0.96rem;
+      width: 100%;
+      margin-top: 8px;
+    }
+    .btn-audio {
+      background: #064e3b;
+      color: #ecfdf5;
+      border: 1px solid #34d399;
+      padding: 9px;
+      width: 100%;
+      margin-top: 14px;
+      font-size: 0.85rem;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 11px 12px;
+      background: #040d09;
+      border: 1px solid #10b981;
+      color: #ecfdf5;
+      border-radius: 8px;
+      margin: 12px 0;
+      font-size: 0.95rem;
+      font-weight: bold;
+    }
+    .opt-card {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: #062016;
+      color: #ecfdf5;
+      border: 1px solid #10b981;
+      padding: 11px 14px;
+      margin-bottom: 8px;
+      font-size: 0.93rem;
+      line-height: 1.35;
+    }
+    .opt-card:hover:not(:disabled) { background: #0a3625; border-color: #a3e635; }
+    .opt-card.correct { background: #15803d; border-color: #bbf7d0; color: #fff; }
+    .opt-card.wrong { background: #991b1b; border-color: #fecaca; color: #fff; }
+    .exp-box {
+      background: #040d09;
+      border-left: 4px solid #a3e635;
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-size: 0.88rem;
+      color: #fde047;
+      display: none;
+    }
+    .podium-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 11px 14px;
+      margin-bottom: 8px;
+      border-radius: 8px;
+      background: #062016;
+      border-left: 5px solid #10b981;
+    }
+    .rank-1 { border-color: #facc15; background: rgba(250, 204, 21, 0.14); }
+    .rank-2 { border-color: #e2e8f0; }
+    .rank-3 { border-color: #d97706; }
+    .rank-4 { border-color: #64748b; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="split-arena">
+    <!-- PAINEL LATERAL BIOMÉDICO (TELEMETRIA HP + CRONÔMETRO CIRCULAR SVG) -->
+    <aside>
+      <div>
+        <span class="bio-badge">1º ANO • JOGOS DIGITAIS</span>
+        <h1>BIO-HUD v1.0</h1>
+        <p style="font-size:0.8rem;color:#6ee7b7;line-height:1.4;">Aluno(a):<br><strong>Ariell Santana do Nascimento</strong></p>
+
+        <div style="margin-top:14px;">
+          <small style="color:#a3e635;font-weight:bold;">VITALIDADE FÍSICA (HP): <span id="hpVal">100%</span></small>
+          <div class="hp-track"><div class="hp-fill" id="hpBar"></div></div>
+        </div>
+
+        <div class="svg-clock">
+          <svg>
+            <circle class="ring-bg" cx="48" cy="48" r="40"></circle>
+            <circle class="ring-fg" id="svgRing" cx="48" cy="48" r="40"></circle>
+          </svg>
+          <span class="clock-label" id="clockText">15s</span>
+        </div>
+
+        <div style="background:#040d09;padding:10px;border-radius:8px;border:1px solid #065f46;font-size:0.85rem;">
+          <p>FASE: <strong id="hudPhase" style="color:#a3e635;">STANDBY</strong></p>
+          <p style="margin-top:4px;">SCORE: <strong id="hudScore" style="color:#34d399;">0</strong> pts</p>
+        </div>
+      </div>
+
+      <button class="btn-audio" id="btnMusic" onclick="toggleAudio()">🔊 Música (Sol Maior): ON</button>
+    </aside>
+
+    <!-- ARENA PRINCIPAL DE QUESTÕES -->
+    <main>
+      <section id="secStart">
+        <span class="bio-badge">JOGO 1 • SAÚDE FÍSICA & REABILITAÇÃO</span>
+        <h1>Simulador de Reabilitação Motora</h1>
+        <p style="color:#a7f3d0;line-height:1.5;margin-top:8px;font-size:0.94rem;">
+          Supere os 9 protocolos divididos em <strong>Fácil</strong> (1–3), <strong>Médio</strong> (4–6) e <strong>Difícil</strong> (7–9) com alternativas <strong>A, B, C, D e E</strong> sobre fisioterapia, ergonomia e biomecânica.
+        </p>
+        <input type="text" id="playerInput" value="Ariell Santana do Nascimento" maxlength="45">
+        <button class="btn-exec" onclick="startGame(true)">⏱️ Com Tempo (15s)</button>
+        <button class="btn-free" onclick="startGame(false)">♾️ Sem Tempo (Livre)</button>
+      </section>
+
+      <section id="secPhase" class="hidden" style="text-align:center;padding:32px 10px;">
+        <span class="bio-badge">PROTOCOLO CONCLUÍDO</span>
+        <h1 id="phaseHeader" style="font-size:1.6rem;">FASE 2 DESBLOQUEADA</h1>
+        <p id="phaseDesc" style="margin:14px 0 22px;color:#a7f3d0;line-height:1.5;"></p>
+        <button class="btn-exec" onclick="continuePhase()">Avançar para Próxima Fase ➡️</button>
+      </section>
+
+      <section id="secQuiz" class="hidden">
+        <p style="color:#a3e635;font-size:0.84rem;font-weight:bold;margin-bottom:8px;" id="qIndicator">FASE: FÁCIL • QUESTÃO 1/9</p>
+        <h2 style="font-size:1.12rem;margin-bottom:15px;line-height:1.45;" id="qStatement"></h2>
+        <div id="qOptions"></div>
+        <div class="exp-box" id="qExplanation"></div>
+        <button class="btn-exec hidden" id="btnNext" onclick="nextStep()">Continuar ➡️</button>
+      </section>
+
+      <section id="secEnd" class="hidden">
+        <h1>🏆 Pódio Final — Saúde Física</h1>
+        <p id="finalSummary" style="margin:8px 0 16px;color:#a7f3d0;font-size:0.92rem;"></p>
+        <div id="podiumContainer"></div>
+        <button class="btn-exec" onclick="location.reload()">🔄 Jogar Novamente</button>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const QUESTIONS = [
+      { phase: "Fácil", pts: 100, q: "Qual prática prepara as articulações e reduz o risco de distensões antes de atividades físicas?", opts: ["A) Treinar em jejum prolongado", "B) Realizar aquecimento articular e alongamento dinâmico leve", "C) Aplicar carga máxima logo na primeira repetição", "D) Evitar beber água durante o treino", "E) Prender a respiração durante o esforço"], ans: 1, exp: "O aquecimento eleva a temperatura muscular e lubrifica as articulações." },
+      { phase: "Fácil", pts: 100, q: "Na ergonomia aplicada a estudantes de Programação de Jogos, qual deve ser a posição do monitor?", opts: ["A) No nível dos joelhos", "B) Muito acima do topo da cabeça", "C) Na linha horizontal dos olhos, mantendo a coluna apoiada", "D) Virado lateralmente em 90 graus", "E) Encostado diretamente no teclado"], ans: 2, exp: "Alinhar o topo da tela aos olhos evita sobrecarga na coluna cervical." },
+      { phase: "Fácil", pts: 100, q: "Qual é a função essencial da água no organismo durante exercícios físicos?", opts: ["A) Bloquear a produção de suor", "B) Regular a temperatura corporal e transportar nutrientes celulares", "C) Diminuir a oxigenação cerebral", "D) Provocar câimbras imediatas", "E) Impedir a absorção de proteínas"], ans: 1, exp: "A hidratação mantém o equilíbrio térmico e o desempenho muscular." },
+      { phase: "Médio", pts: 150, q: "Na reabilitação física após a retirada de imobilização (gesso), qual é a prioridade inicial da fisioterapia?", opts: ["A) Saltar obstáculos altos", "B) Recuperar amplitude de movimento (ADM) e força gradual sem dor aguda", "C) Correr 10 km no mesmo dia", "D) Imobilizar o membro novamente por precaução", "E) Ignorar a perda de massa muscular"], ans: 1, exp: "A reabilitação respeita a progressão biológica dos tecidos." },
+      { phase: "Médio", pts: 150, q: "O que significa um programa de 'reabilitação cardiopulmonar'?", opts: ["A) Cirurgia estética facial", "B) Exercícios supervisionados para recuperar capacidade cardíaca e respiratória", "C) Repouso absoluto deitado por dois anos", "D) Dieta baseada apenas em açúcares", "E) Tratamento dermatológico preventivo"], ans: 1, exp: "Fortalece o miocárdio e melhora a eficiência respiratória após eventos clínicos." },
+      { phase: "Médio", pts: 150, q: "Qual tipo de contração muscular ocorre ao sustentar uma prancha abdominal estática?", opts: ["A) Contração Isométrica", "B) Contração Balística", "C) Relaxamento Passivo", "D) Contração Involuntária", "E) Espasmo Reflexo"], ans: 0, exp: "Na isometria há geração de tensão muscular sem alteração visível no ângulo articular." },
+      { phase: "Difícil", pts: 200, q: "Na fisioterapia ortopédica e esportiva, o que é o treino de 'propriocepção'?", opts: ["A) Uso exclusivo de analgésicos", "B) Treino da percepção espacial e equilíbrio articular para prevenir recidivas de entorses", "C) Cirurgia de reconstrução ligamentar", "D) Medição capilar de glicose", "E) Massagem relaxante superficial"], ans: 1, exp: "Reeduca os mecanorreceptores articulares para respostas rápidas de estabilização." },
+      { phase: "Difícil", pts: 200, q: "A Síndrome do Túnel do Carpo, frequente em digitadores, resulta da compressão de qual nervo?", opts: ["A) Nervo ciático na região lombar", "B) Nervo mediano na passagem do punho", "C) Tendão calcâneo no tornozelo", "D) Nervo óptico na retina", "E) Nervo radial no ombro"], ans: 1, exp: "A inflamação dos tendões flexores no canal do carpo comprime o nervo mediano." },
+      { phase: "Difícil", pts: 200, q: "Qual é o papel dos músculos do 'core' (abdômen profundo, lombar e pelve) na reabilitação funcional?", opts: ["A) Apenas definição estética", "B) Estabilizar a coluna vertebral e transferir força com segurança entre membros", "C) Bloquear a respiração diafragmática", "D) Reduzir a mobilidade pélvica", "E) Proteger exclusivamente os dedos"], ans: 1, exp: "O core funciona como centro de estabilização biomecânica de todo o corpo." }
+    ];
+
+    let idx = 0, score = 0, hp = 100, timed = true, tLeft = 15, tLoop = null;
+    let audioCtx = null, bgmLoop = null, soundOn = true, playerName = "Ariell Santana do Nascimento";
+
+    function playTone(freq, dur, wave = "triangle", vol = 0.045) {
+      if (!soundOn) return;
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === "suspended") audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = wave;
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + dur);
+    }
+
+    function startMusic() {
+      clearInterval(bgmLoop);
+      const gMajor = [196.00, 246.94, 293.66, 392.00, 329.63, 293.66, 246.94, 293.66];
+      let step = 0;
+      bgmLoop = setInterval(() => {
+        if (soundOn) playTone(gMajor[step++ % gMajor.length], 0.22, "triangle", 0.04);
+      }, 330);
+    }
+
+    function toggleAudio() {
+      soundOn = !soundOn;
+      document.getElementById("btnMusic").innerText = soundOn ? "🔊 Música (Sol Maior): ON" : "🔇 Música: OFF";
+    }
+
+    function startGame(isTimed) {
+      playerName = document.getElementById("playerInput").value.trim() || "Ariell Santana do Nascimento";
+      timed = isTimed;
+      startMusic();
+      document.getElementById("secStart").classList.add("hidden");
+      document.getElementById("secQuiz").classList.remove("hidden");
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      clearInterval(tLoop);
+      const item = QUESTIONS[idx];
+      document.getElementById("hudPhase").innerText = item.phase.toUpperCase();
+      document.getElementById("qIndicator").innerText = "FASE: " + item.phase.toUpperCase() + " • QUESTÃO " + (idx + 1) + "/" + QUESTIONS.length;
+      document.getElementById("qStatement").innerText = (idx + 1) + ". " + item.q;
+      const expEl = document.getElementById("qExplanation");
+      expEl.style.display = "none";
+      document.getElementById("btnNext").classList.add("hidden");
+
+      const box = document.getElementById("qOptions");
+      box.innerHTML = "";
+      item.opts.forEach((opt, i) => {
+        const btn = document.createElement("button");
+        btn.className = "opt-card";
+        btn.innerText = opt;
+        btn.onclick = () => checkAnswer(i);
+        box.appendChild(btn);
+      });
+
+      const ring = document.getElementById("svgRing");
+      if (timed) {
+        tLeft = 15;
+        document.getElementById("clockText").innerText = "15s";
+        ring.style.strokeDashoffset = 0;
+        tLoop = setInterval(() => {
+          tLeft -= 0.1;
+          document.getElementById("clockText").innerText = Math.max(0, Math.ceil(tLeft)) + "s";
+          ring.style.strokeDashoffset = 251.2 * (1 - Math.max(0, tLeft) / 15);
+          if (tLeft <= 0) {
+            clearInterval(tLoop);
+            checkAnswer(-1);
+          }
+        }, 100);
+      } else {
+        document.getElementById("clockText").innerText = "∞";
+        ring.style.strokeDashoffset = 0;
+      }
+    }
+
+    function checkAnswer(choice) {
+      clearInterval(tLoop);
+      const item = QUESTIONS[idx];
+      const buttons = document.querySelectorAll(".opt-card");
+      buttons.forEach(b => b.disabled = true);
+
+      const expEl = document.getElementById("qExplanation");
+      if (choice === item.ans) {
+        buttons[choice].classList.add("correct");
+        const bonus = timed ? Math.round(tLeft * 4) : 0;
+        score += item.pts + bonus;
+        hp = Math.min(100, hp + 10);
+        playTone(659.25, 0.25, "sine", 0.09);
+        expEl.innerHTML = "✅ <strong>Correto! (+" + (item.pts + bonus) + " pts)</strong> " + item.exp;
+      } else {
+        if (choice >= 0) buttons[choice].classList.add("wrong");
+        buttons[item.ans].classList.add("correct");
+        hp = Math.max(20, hp - 15);
+        playTone(155, 0.35, "sawtooth", 0.08);
+        expEl.innerHTML = (choice === -1 ? "⏰ <strong>Tempo esgotado!</strong> " : "❌ <strong>Incorreto!</strong> ") + item.exp;
+      }
+
+      document.getElementById("hudScore").innerText = score;
+      document.getElementById("hpVal").innerText = hp + "%";
+      document.getElementById("hpBar").style.width = hp + "%";
+      expEl.style.display = "block";
+      document.getElementById("btnNext").classList.remove("hidden");
+    }
+
+    function nextStep() {
+      idx++;
+      if (idx === 3 || idx === 6) {
+        document.getElementById("secQuiz").classList.add("hidden");
+        document.getElementById("secPhase").classList.remove("hidden");
+        document.getElementById("phaseHeader").innerText = idx === 3 ? "⚡ FASE 2: MÉDIO" : "🔥 FASE 3: DIFÍCIL";
+        document.getElementById("phaseDesc").innerText = "Excelente progresso, " + playerName + "! Pontuação atual: " + score + " pts • Vitalidade: " + hp + "%.";
+        playTone(587.33, 0.3, "triangle", 0.09);
+      } else if (idx < QUESTIONS.length) {
+        loadQuestion();
+      } else {
+        finishGame();
+      }
+    }
+
+    function continuePhase() {
+      document.getElementById("secPhase").classList.add("hidden");
+      document.getElementById("secQuiz").classList.remove("hidden");
+      loadQuestion();
+    }
+
+    function finishGame() {
+      document.getElementById("secQuiz").classList.add("hidden");
+      document.getElementById("secEnd").classList.remove("hidden");
+      playTone(783.99, 0.4, "triangle", 0.1);
+
+      const ranking = [
+        { name: playerName + " (Você)", pts: score },
+        { name: "Dr. CyberFisio", pts: 1180 },
+        { name: "Atleta Alpha", pts: 790 },
+        { name: "Cadete Bio", pts: 380 }
+      ].sort((a, b) => b.pts - a.pts);
+
+      const labels = ["🥇 1º LUGAR — CAMPEÃO", "🥈 2º LUGAR — VICE-CAMPEÃO", "🥉 3º LUGAR", "🏅 4º LUGAR"];
+      const classes = ["rank-1", "rank-2", "rank-3", "rank-4"];
+
+      document.getElementById("finalSummary").innerText = "Modo: " + (timed ? "Com Tempo (15s)" : "Sem Tempo (Livre)") + " • Pontuação Final: " + score + " pts";
+      document.getElementById("podiumContainer").innerHTML = ranking.map((r, i) =>
+        "<div class='podium-item " + classes[i] + "'><span><strong>" + labels[i] + "</strong><br>" + r.name + "</span><strong>" + r.pts + " pts</strong></div>"
+      ).join("");
+    }
+  <\/script>
+</body>
+</html>`
+      },
+
+      2: {
+        id: 2,
+        fileName: "jogo2_saude_mental.html",
+        title: "2. Saúde Mental (SynapseLab)",
+        activeClass: "bg-cyan-500 text-slate-950 border-cyan-300 shadow-lg shadow-cyan-500/25",
+        inactiveClass: "bg-cyan-950/50 text-cyan-300 border-cyan-700/60 hover:bg-cyan-900/60",
+        html: `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <!-- =========================================================================
+       DISCIPLINA: 1º Ano — Programação de Jogos Digitais
+       TEMA: Saúde e Reabilitação — Jogo 2: Saúde Mental e Equilíbrio Cognitivo
+       ALUNO(A): Ariell Santana do Nascimento
+  ========================================================================== -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SynapseLab - Saúde Mental | Ariell Santana do Nascimento</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    body {
+      background-color: #050816;
+      background-image:
+        linear-gradient(rgba(6, 182, 212, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(129, 140, 248, 0.08) 1px, transparent 1px);
+      background-size: 32px 32px;
+      color: #e0f2fe;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: rgba(10, 18, 42, 0.92);
+      border-bottom: 1px solid #06b6d4;
+      padding: 12px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      backdrop-filter: blur(8px);
+    }
+    .container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 18px;
+    }
+    .glass-panel {
+      width: 100%;
+      max-width: 840px;
+      background: rgba(13, 24, 54, 0.88);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(6, 182, 212, 0.5);
+      border-radius: 22px;
+      padding: 26px;
+      box-shadow: 0 22px 55px rgba(0, 0, 0, 0.65), 0 0 30px rgba(6, 182, 212, 0.16);
+    }
+    .pill {
+      background: rgba(6, 182, 212, 0.18);
+      color: #38bdf8;
+      border: 1px solid #06b6d4;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: inline-block;
+    }
+    h1 { font-size: 1.75rem; color: #38bdf8; margin: 10px 0; }
+    .strip { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+    .chip { background: #070d24; border: 1px solid #1e3a8a; padding: 8px 14px; border-radius: 10px; font-size: 0.9rem; }
+    .grid-opts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 11px;
+      margin-top: 16px;
+    }
+    .grid-opts button:last-child { grid-column: span 2; }
+    @media (max-width: 640px) {
+      .grid-opts { grid-template-columns: 1fr; }
+      .grid-opts button:last-child { grid-column: span 1; }
+    }
+    .ans-card {
+      background: #0b1536;
+      color: #f0f9ff;
+      border: 1px solid #2563eb;
+      padding: 13px;
+      border-radius: 12px;
+      text-align: left;
+      font-size: 0.94rem;
+      cursor: pointer;
+      transition: 0.2s;
+      line-height: 1.35;
+    }
+    .ans-card:hover:not(:disabled) { border-color: #38bdf8; background: #132354; transform: translateY(-2px); }
+    .ans-card.right { background: #0e7490; border-color: #67e8f9; font-weight: bold; }
+    .ans-card.wrong { background: #881337; border-color: #fda4af; }
+    .cta {
+      background: linear-gradient(90deg, #06b6d4, #818cf8);
+      color: #04091a;
+      border: none;
+      padding: 13px 20px;
+      border-radius: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .cta-out {
+      background: transparent;
+      color: #38bdf8;
+      border: 2px solid #38bdf8;
+      padding: 11px 20px;
+      border-radius: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #06b6d4;
+      background: #050816;
+      color: #fff;
+      margin: 14px 0;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .track { height: 8px; background: #050816; border-radius: 99px; overflow: hidden; margin-bottom: 18px; }
+    .fill { height: 100%; width: 100%; background: linear-gradient(90deg, #818cf8, #06b6d4); transition: width 0.1s linear; }
+    .rank-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: #08102b;
+      margin-bottom: 8px;
+      border: 1px solid #1d4ed8;
+    }
+    .gold { border-color: #facc15; background: rgba(250, 204, 21, 0.12); }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <!-- CABEÇALHO NEURAL SUPERIOR FIXO -->
+  <header>
+    <div><strong>🧠 SYNAPSE LAB</strong> • <span style="color:#7dd3fc;">Ariell Santana do Nascimento (1º Ano — Programação de Jogos Digitais)</span></div>
+    <button class="pill" id="musicBtn" onclick="switchSound()" style="cursor:pointer;">🎵 Música (Dó Menor): ON</button>
+  </header>
+
+  <div class="container">
+    <div class="glass-panel">
+      <div id="scrIntro">
+        <span class="pill">JOGO 2 • SAÚDE MENTAL & EQUILÍBRIO COGNITIVO</span>
+        <h1>Conexão Neural & Bem-Estar</h1>
+        <p style="color:#bae6fd;line-height:1.5;">Desafie sua mente nas fases <strong>Fácil</strong> (1–3), <strong>Médio</strong> (4–6) e <strong>Difícil</strong> (7–9) com alternativas <strong>A, B, C, D e E</strong> sobre neurociência, emoções e reabilitação cognitiva.</p>
+        <input type="text" id="playerInput" value="Ariell Santana do Nascimento" maxlength="45">
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <button class="cta" style="flex:1;" onclick="launch(true)">⏱️ Com Tempo (15s)</button>
+          <button class="cta-out" style="flex:1;" onclick="launch(false)">♾️ Sem Tempo (Livre)</button>
+        </div>
+      </div>
+
+      <div id="scrLevel" class="hidden" style="text-align:center;padding:24px 0;">
+        <span class="pill">SINAPSE CONCLUÍDA</span>
+        <h1 id="lvlTitle"></h1>
+        <p id="lvlSub" style="margin-bottom:20px;color:#bae6fd;"></p>
+        <button class="cta" onclick="nextStage()">Continuar Jornada ➡️</button>
+      </div>
+
+      <div id="scrPlay" class="hidden">
+        <div class="strip">
+          <div class="chip">Fase: <strong id="lblPhase" style="color:#38bdf8;">Fácil</strong></div>
+          <div class="chip">Questão: <strong id="lblNum">1/9</strong></div>
+          <div class="chip">Tempo: <strong id="lblClock" style="color:#818cf8;">15s</strong></div>
+          <div class="chip">Pontos: <strong id="lblPts" style="color:#38bdf8;">0</strong></div>
+        </div>
+        <div class="track"><div class="fill" id="barTime"></div></div>
+        <h2 id="txtQ" style="font-size:1.15rem;line-height:1.45;"></h2>
+        <div class="grid-opts" id="boxOpts"></div>
+        <p id="txtExp" style="margin-top:14px;color:#67e8f9;font-size:0.92rem;line-height:1.4;"></p>
+        <button class="cta hidden" id="btnGo" style="width:100%;margin-top:14px;" onclick="stepNext()">Próximo Desafio ➡️</button>
+      </div>
+
+      <div id="scrPodium" class="hidden">
+        <h1>🏆 Classificação Final — Saúde Mental</h1>
+        <p id="txtFinal" style="margin-bottom:16px;color:#bae6fd;"></p>
+        <div id="listPodium"></div>
+        <button class="cta" style="width:100%;margin-top:10px;" onclick="location.reload()">🔄 Jogar Novamente</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const DECK = [
+      { ph: "Fácil", pt: 100, q: "Qual neurotransmissor está fortemente ligado à estabilidade do humor, bem-estar e sono?", o: ["A) Adrenalina pura", "B) Serotonina", "C) Ácido lático", "D) Insulina", "E) Cortisol elevado"], a: 1, exp: "A serotonina regula o humor, o ciclo sono-vigília e a sensação de bem-estar." },
+      { ph: "Fácil", pt: 100, q: "O que significa 'autocuidado emocional' na rotina de estudos?", o: ["A) Ignorar o cansaço mental", "B) Respeitar limites, descansar, pedir ajuda e manter lazer saudável", "C) Estudar 24 horas sem pausa", "D) Isolar-se dos amigos", "E) Reprimir emoções"], a: 1, exp: "Equilibrar deveres e descanso previne a sobrecarga psíquica." },
+      { ph: "Fácil", pt: 100, q: "Qual telefone gratuito oferece apoio emocional 24h no Brasil (CVV)?", o: ["A) 190", "B) 188", "C) 193", "D) 100", "E) 156"], a: 1, exp: "O Centro de Valorização da Vida atende gratuitamente pelo número 188 em todo o país." },
+      { ph: "Médio", pt: 150, q: "Qual a diferença entre ansiedade natural e transtorno de ansiedade?", o: ["A) Não há diferença", "B) A natural prepara para desafios pontuais; o transtorno é intenso, persistente e prejudica a rotina", "C) A ansiedade natural dura anos sem parar", "D) O transtorno melhora com excesso de café", "E) Apenas crianças sentem"], a: 1, exp: "Quando o alerta se torna desproporcional e constante, requer cuidado profissional." },
+      { ph: "Médio", pt: 150, q: "Na reabilitação cognitiva pós-AVC ou trauma craniano, quais funções são treinadas?", o: ["A) Apenas força nos pés", "B) Atenção, memória operacional, linguagem e funções executivas", "C) Visão noturna", "D) Audição ultrassônica", "E) Reflexo patelar"], a: 1, exp: "A estimulação cognitiva ajuda a recuperar autonomia intelectual e comunicativa." },
+      { ph: "Médio", pt: 150, q: "Como o sono adequado protege a saúde mental?", o: ["A) Consolida memórias, regula emoções e limpa toxinas metabólicas cerebrais", "B) Paralisa a circulação", "C) Diminui a criatividade", "D) Aumenta o estresse", "E) Desliga a imunidade"], a: 0, exp: "Durante o sono ocorrem processos essenciais de restauração neural." },
+      { ph: "Difícil", pt: 200, q: "Na reabilitação neurológica, o que significa 'neuroplasticidade'?", o: ["A) Rigidez permanente dos neurônios", "B) Capacidade do cérebro reorganizar conexões sinápticas com estímulos e aprendizado", "C) Implante metálico cerebral", "D) Perda irreversível da fala", "E) Aumento do crânio"], a: 1, exp: "A neuroplasticidade permite criar novas rotas neurais após lesões ou treinos." },
+      { ph: "Difícil", pt: 200, q: "Qual estrutura cerebral é responsável pelo controle de impulsos e regulação emocional?", o: ["A) Córtex Pré-Frontal", "B) Medula Espinhal", "C) Nervo Vago", "D) Tireoide", "E) Retina"], a: 0, exp: "O córtex pré-frontal coordena planejamento, autocontrole e tomada de decisão." },
+      { ph: "Difícil", pt: 200, q: "Na Terapia Cognitivo-Comportamental (TCC), qual é o foco principal?", o: ["A) Analisar apenas sonhos sem metas", "B) Identificar e reestruturar pensamentos disfuncionais que afetam emoções e comportamentos", "C) Proibir decisões", "D) Ignorar hábitos atuais", "E) Aplicar choques"], a: 1, exp: "A TCC trabalha de forma estruturada a relação entre cognição, emoção e ação." }
+    ];
+
+    let cur = 0, pts = 0, useTimer = true, sec = 15, loop = null;
+    let actx = null, bgm = null, audioOn = true, pName = "Ariell Santana do Nascimento";
+
+    function tone(f, d, wave = "sine", vol = 0.045) {
+      if (!audioOn) return;
+      if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+      if (actx.state === "suspended") actx.resume();
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = wave;
+      o.frequency.value = f;
+      g.gain.setValueAtTime(vol, actx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + d);
+      o.connect(g);
+      g.connect(actx.destination);
+      o.start();
+      o.stop(actx.currentTime + d);
+    }
+
+    function playBGM() {
+      clearInterval(bgm);
+      const seq = [261.63, 311.13, 392.00, 466.16, 392.00, 311.13];
+      let k = 0;
+      bgm = setInterval(() => {
+        if (audioOn) tone(seq[k++ % seq.length], 0.45, "sine", 0.045);
+      }, 450);
+    }
+
+    function switchSound() {
+      audioOn = !audioOn;
+      document.getElementById("musicBtn").innerText = audioOn ? "🎵 Música (Dó Menor): ON" : "🔇 Música: OFF";
+    }
+
+    function launch(timed) {
+      pName = document.getElementById("playerInput").value.trim() || "Ariell Santana do Nascimento";
+      useTimer = timed;
+      playBGM();
+      document.getElementById("scrIntro").classList.add("hidden");
+      document.getElementById("scrPlay").classList.remove("hidden");
+      showCard();
+    }
+
+    function showCard() {
+      clearInterval(loop);
+      const q = DECK[cur];
+      document.getElementById("lblPhase").innerText = q.ph;
+      document.getElementById("lblNum").innerText = (cur + 1) + "/" + DECK.length;
+      document.getElementById("lblPts").innerText = pts;
+      document.getElementById("txtQ").innerText = (cur + 1) + ". " + q.q;
+      document.getElementById("txtExp").innerText = "";
+      document.getElementById("btnGo").classList.add("hidden");
+
+      const box = document.getElementById("boxOpts");
+      box.innerHTML = "";
+      q.o.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "ans-card";
+        btn.innerText = opt;
+        btn.onclick = () => check(idx);
+        box.appendChild(btn);
+      });
+
+      if (useTimer) {
+        sec = 15;
+        document.getElementById("lblClock").innerText = "15s";
+        document.getElementById("barTime").style.width = "100%";
+        loop = setInterval(() => {
+          sec -= 0.1;
+          document.getElementById("lblClock").innerText = Math.max(0, Math.ceil(sec)) + "s";
+          document.getElementById("barTime").style.width = Math.max(0, (sec / 15) * 100) + "%";
+          if (sec <= 0) {
+            clearInterval(loop);
+            check(-1);
+          }
+        }, 100);
+      } else {
+        document.getElementById("lblClock").innerText = "Livre";
+        document.getElementById("barTime").style.width = "100%";
+      }
+    }
+
+    function check(i) {
+      clearInterval(loop);
+      const q = DECK[cur];
+      const all = document.querySelectorAll(".ans-card");
+      all.forEach(b => b.disabled = true);
+      if (i === q.a) {
+        all[i].classList.add("right");
+        const bonus = useTimer ? Math.round(sec * 4) : 0;
+        pts += q.pt + bonus;
+        tone(587.33, 0.3, "sine", 0.09);
+        document.getElementById("txtExp").innerText = "✅ Conexão neural perfeita! (+" + (q.pt + bonus) + " pts) " + q.exp;
+      } else {
+        if (i >= 0) all[i].classList.add("wrong");
+        all[q.a].classList.add("right");
+        tone(174.61, 0.35, "sawtooth", 0.08);
+        document.getElementById("txtExp").innerText = (i === -1 ? "⏰ O tempo acabou! " : "❌ Alternativa incorreta. ") + q.exp;
+      }
+      document.getElementById("lblPts").innerText = pts;
+      document.getElementById("btnGo").classList.remove("hidden");
+    }
+
+    function stepNext() {
+      cur++;
+      if (cur === 3 || cur === 6) {
+        document.getElementById("scrPlay").classList.add("hidden");
+        document.getElementById("scrLevel").classList.remove("hidden");
+        document.getElementById("lvlTitle").innerText = cur === 3 ? "Fase 2: MÉDIO ⚡" : "Fase 3: DIFÍCIL 🔥";
+        document.getElementById("lvlSub").innerText = "Muito bem, " + pName + "! Você somou " + pts + " pontos até esta etapa.";
+        tone(659.25, 0.3, "sine", 0.09);
+      } else if (cur < DECK.length) {
+        showCard();
+      } else {
+        endGame();
+      }
+    }
+
+    function nextStage() {
+      document.getElementById("scrLevel").classList.add("hidden");
+      document.getElementById("scrPlay").classList.remove("hidden");
+      showCard();
+    }
+
+    function endGame() {
+      document.getElementById("scrPlay").classList.add("hidden");
+      document.getElementById("scrPodium").classList.remove("hidden");
+      tone(783.99, 0.4, "sine", 0.1);
+      const board = [
+        { name: pName + " (Você)", score: pts },
+        { name: "Córtex Prime", score: 1210 },
+        { name: "MindWalker", score: 820 },
+        { name: "CalmaBot", score: 410 }
+      ].sort((a, b) => b.score - a.score);
+      const medals = ["🏆 1º LUGAR — CAMPEÃO", "🥈 2º LUGAR — VICE-CAMPEÃO", "🥉 3º LUGAR", "🏅 4º LUGAR"];
+      document.getElementById("txtFinal").innerText = "Modo: " + (useTimer ? "Com Tempo (15s)" : "Sem Tempo (Livre)") + " • Resultado: " + pts + " pontos";
+      document.getElementById("listPodium").innerHTML = board.map((item, idx) =>
+        "<div class='rank-card " + (idx === 0 ? "gold" : "") + "'><span><strong>" + medals[idx] + "</strong> • " + item.name + "</span><strong>" + item.score + " pts</strong></div>"
+      ).join("");
+    }
+  <\/script>
+</body>
+</html>`
+      },
+
+      3: {
+        id: 3,
+        fileName: "jogo3_saude_social.html",
+        title: "3. Saúde Social (RedeViva)",
+        activeClass: "bg-orange-500 text-slate-950 border-orange-300 shadow-lg shadow-orange-500/25",
+        inactiveClass: "bg-orange-950/50 text-orange-300 border-orange-700/60 hover:bg-orange-900/60",
+        html: `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <!-- =========================================================================
+       DISCIPLINA: 1º Ano — Programação de Jogos Digitais
+       TEMA: Saúde e Reabilitação — Jogo 3: Saúde Social e Inclusão Comunitária
+       ALUNO(A): Ariell Santana do Nascimento
+  ========================================================================== -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RedeViva - Saúde Social | Ariell Santana do Nascimento</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; }
+    body {
+      background: radial-gradient(circle at top, #2c1208, #140804 80%);
+      color: #fff7ed;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+    .wrapper { width: 100%; max-width: 800px; }
+    .node-map {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      background: #261008;
+      padding: 12px 16px;
+      border-radius: 14px;
+      border: 1px solid #f97316;
+      margin-bottom: 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    }
+    .node {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #431407;
+      border: 2px solid #9a3412;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: bold;
+      transition: 0.25s;
+    }
+    .node.done { background: #f97316; color: #140804; border-color: #facc15; }
+    .node.active { border-color: #facc15; box-shadow: 0 0 12px #f97316; transform: scale(1.1); }
+    article {
+      background: #230f07;
+      border: 2px solid #f97316;
+      padding: 28px;
+      clip-path: polygon(0 0, calc(100% - 26px) 0, 100% 26px, 100% 100%, 26px 100%, 0 calc(100% - 26px));
+      box-shadow: 0 0 32px rgba(249, 115, 22, 0.2);
+    }
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+      color: #fdba74;
+      font-size: 0.85rem;
+    }
+    h1 { color: #fb923c; font-size: 1.72rem; margin-bottom: 10px; }
+    .btn-orange {
+      background: linear-gradient(135deg, #f97316, #facc15);
+      color: #1a0702;
+      border: none;
+      padding: 13px 18px;
+      font-weight: 800;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .btn-border {
+      background: transparent;
+      color: #facc15;
+      border: 2px solid #facc15;
+      padding: 11px 18px;
+      font-weight: 800;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 11px 12px;
+      background: #140804;
+      border: 1px solid #f97316;
+      color: #fff;
+      margin: 12px 0;
+      border-radius: 8px;
+      font-size: 0.96rem;
+      font-weight: bold;
+    }
+    .choice {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: #36170b;
+      color: #ffedd5;
+      border: 1px solid #c2410c;
+      padding: 12px 15px;
+      margin-bottom: 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.94rem;
+      line-height: 1.35;
+      transition: 0.18s;
+    }
+    .choice:hover:not(:disabled) { background: #4d2110; border-color: #facc15; }
+    .choice.win { background: #166534; border-color: #86efac; font-weight: bold; }
+    .choice.lose { background: #991b1b; border-color: #fca5a5; }
+    .timer-strip { height: 7px; background: #431407; margin: 10px 0 16px; border-radius: 99px; overflow: hidden; }
+    .timer-strip div { height: 100%; background: linear-gradient(90deg, #f97316, #facc15); width: 100%; transition: width 0.1s linear; }
+    .pod-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 14px;
+      background: #36170b;
+      margin-bottom: 8px;
+      border-left: 5px solid #f97316;
+      border-radius: 6px;
+    }
+    .pod-line.top { border-color: #facc15; background: rgba(250, 204, 21, 0.14); }
+    .off { display: none; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <!-- MAPA SUPERIOR DE 9 NÓS COMUNITÁRIOS -->
+    <nav class="node-map" id="nodeMap" aria-label="Progresso dos 9 Nós Comunitários"></nav>
+
+    <!-- CARD CHANFRADO COM CLIP-PATH -->
+    <article>
+      <div class="meta">
+        <span>🤝 JOGO 3 • SAÚDE SOCIAL | <strong>Ariell Santana do Nascimento</strong> (1º Ano)</span>
+        <button class="btn-border" style="padding:5px 10px;font-size:0.8rem;" id="sndToggle" onclick="toggleSnd()">🎵 Música (Fá Maior): ON</button>
+      </div>
+
+      <div id="pStart">
+        <h1>RedeViva: Inclusão & Comunidade</h1>
+        <p style="color:#fed7aa;line-height:1.5;">Conecte os 9 nós comunitários avançando pelas fases <strong>Fácil</strong> (1–3), <strong>Médio</strong> (4–6) e <strong>Difícil</strong> (7–9) com alternativas <strong>A, B, C, D e E</strong> sobre cidadania, acessibilidade e reabilitação psicossocial.</p>
+        <input type="text" id="nameField" value="Ariell Santana do Nascimento" maxlength="45">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <button class="btn-orange" onclick="begin(true)">⏱️ Com Tempo (15s)</button>
+          <button class="btn-border" onclick="begin(false)">♾️ Sem Tempo (Livre)</button>
+        </div>
+      </div>
+
+      <div id="pStage" class="off" style="text-align:center;padding:24px 0;">
+        <h1 id="stgHead"></h1>
+        <p id="stgDesc" style="margin:12px 0 20px;color:#fed7aa;"></p>
+        <button class="btn-orange" style="width:100%;" onclick="goStage()">Continuar Missão ➡️</button>
+      </div>
+
+      <div id="pGame" class="off">
+        <div class="meta" style="margin-bottom:4px;">
+          <strong id="gPhase">FASE: FÁCIL</strong>
+          <strong id="gClock">⏱️ 15s</strong>
+          <strong id="gPts">PONTOS: 0</strong>
+        </div>
+        <div class="timer-strip"><div id="gBar"></div></div>
+        <h2 id="gQuestion" style="font-size:1.15rem;margin-bottom:15px;line-height:1.45;"></h2>
+        <div id="gChoices"></div>
+        <p id="gNote" style="margin-top:10px;color:#fde047;font-size:0.9rem;line-height:1.4;"></p>
+        <button class="btn-orange off" id="gNext" style="width:100%;margin-top:12px;" onclick="nextStep()">Avançar Nó ➡️</button>
+      </div>
+
+      <div id="pFinal" class="off">
+        <h1>🏆 Pódio Final — Saúde Social</h1>
+        <p id="fSummary" style="margin-bottom:14px;color:#fed7aa;"></p>
+        <div id="fPodium"></div>
+        <button class="btn-orange" style="width:100%;margin-top:10px;" onclick="location.reload()">🔄 Jogar Novamente</button>
+      </div>
+    </article>
+  </div>
+
+  <script>
+    const DATA = [
+      { ph: "Fácil", pt: 100, q: "Qual atitude fortalece o senso de pertencimento e saúde social na escola?", o: ["A) Excluir colegas diferentes", "B) Praticar respeito mútuo, cooperação e acolhimento", "C) Espalhar boatos em grupos", "D) Ignorar quem precisa de ajuda", "E) Competir de forma desleal"], a: 1, exp: "A convivência respeitosa cria redes de apoio que protegem toda a turma." },
+      { ph: "Fácil", pt: 100, q: "O que é 'escuta ativa' na convivência interpessoal?", o: ["A) Interromper o colega para falar", "B) Olhar no celular enquanto alguém desabafa", "C) Ouvir com atenção genuína e empatia, sem julgamentos precipitados", "D) Fingir que escutou", "E) Falar mais alto"], a: 2, exp: "A escuta ativa valida sentimentos e reduz conflitos familiares e escolares." },
+      { ph: "Fácil", pt: 100, q: "Qual recurso torna jogos digitais acessíveis para jogadores com deficiência visual?", o: ["A) Remover todos os sons", "B) Leitores de tela, audiodescrição, pistas sonoras e alto contraste", "C) Diminuir a fonte ao mínimo", "D) Usar cores idênticas", "E) Bloquear o teclado"], a: 1, exp: "Acessibilidade digital garante inclusão e autonomia para todos os jogadores." },
+      { ph: "Médio", pt: 150, q: "O que significa 'reinserção social' na reabilitação de pessoas em vulnerabilidade?", o: ["A) Afastar do convívio familiar", "B) Garantir acesso à educação, trabalho, cultura e convivência digna na sociedade", "C) Manter o paciente isolado", "D) Negar direitos civis", "E) Proibir lazer comunitário"], a: 1, exp: "A reabilitação psicossocial reconstroi vínculos comunitários e cidadania." },
+      { ph: "Médio", pt: 150, q: "Como o 'cyberbullying' afeta a saúde integral dos adolescentes?", o: ["A) Melhora a popularidade", "B) Provoca ansiedade, isolamento social, queda escolar e sofrimento psíquico", "C) Não tem impacto real", "D) Fortalece a amizade", "E) É apenas humor"], a: 1, exp: "A violência digital gera impactos emocionais e sociais reais e profundos." },
+      { ph: "Médio", pt: 150, q: "Quais são os pilares da Comunicação Não-Violenta (CNV)?", o: ["A) Gritar, culpar, exigir e punir", "B) Observação sem julgamento, sentimentos, necessidades e pedido claro", "C) Silêncio, ironia, fuga e crítica", "D) Imposição e ameaça", "E) Sarcasmo e indiferença"], a: 1, exp: "A CNV transforma conflitos em diálogo empático focado nas necessidades humanas." },
+      { ph: "Difícil", pt: 200, q: "No SUS, qual é o objetivo dos CAPS na Reabilitação Psicossocial?", o: ["A) Isolar pacientes para sempre", "B) Promover acolhimento, autonomia e reintegração social e familiar na comunidade", "C) Realizar cirurgias cardíacas", "D) Substituir escolas", "E) Aplicar multas"], a: 1, exp: "Os CAPS substituem o modelo asilar pelo cuidado em liberdade e reinserção social." },
+      { ph: "Difícil", pt: 200, q: "O que são os 'Determinantes Sociais da Saúde'?", o: ["A) Apenas o código genético", "B) Condições em que as pessoas nascem, vivem, estudam e trabalham (renda, moradia, educação)", "C) Somente o tipo sanguíneo", "D) O signo astrológico", "E) A cor dos olhos"], a: 1, exp: "Fatores ambientais, econômicos e comunitários influenciam diretamente a saúde coletiva." },
+      { ph: "Difícil", pt: 200, q: "Na reabilitação pós-AVC ou trauma, qual papel a família e a comunidade desempenham?", o: ["A) Nenhum impacto", "B) Rede de suporte essencial que acelera a adesão ao tratamento e previne o abandono", "C) Devem impedir a fisioterapia", "D) Devem criticar o paciente", "E) Substituem os médicos"], a: 1, exp: "O suporte sociofamiliar é um dos maiores preditores de sucesso na reabilitação." }
+    ];
+
+    let step = 0, score = 0, timed = true, sec = 15, timer = null;
+    let actx = null, mLoop = null, snd = true, player = "Ariell Santana do Nascimento";
+
+    function buildNodes() {
+      const nav = document.getElementById("nodeMap");
+      nav.innerHTML = DATA.map((_, i) =>
+        "<div class='node " + (i < step ? "done" : "") + " " + (i === step ? "active" : "") + "'>" + (i + 1) + "</div>"
+      ).join("");
+    }
+    buildNodes();
+
+    function playNote(f, d, wave = "triangle", vol = 0.045) {
+      if (!snd) return;
+      if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+      if (actx.state === "suspended") actx.resume();
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = wave;
+      o.frequency.value = f;
+      g.gain.setValueAtTime(vol, actx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + d);
+      o.connect(g);
+      g.connect(actx.destination);
+      o.start();
+      o.stop(actx.currentTime + d);
+    }
+
+    function startMusic() {
+      clearInterval(mLoop);
+      const scale = [349.23, 440.00, 523.25, 440.00, 392.00, 493.88];
+      let n = 0;
+      mLoop = setInterval(() => {
+        if (snd) playNote(scale[n++ % scale.length], 0.28, "triangle", 0.045);
+      }, 360);
+    }
+
+    function toggleSnd() {
+      snd = !snd;
+      document.getElementById("sndToggle").innerText = snd ? "🎵 Música (Fá Maior): ON" : "🔇 Música: OFF";
+    }
+
+    function begin(isTimed) {
+      player = document.getElementById("nameField").value.trim() || "Ariell Santana do Nascimento";
+      timed = isTimed;
+      startMusic();
+      document.getElementById("pStart").classList.add("off");
+      document.getElementById("pGame").classList.remove("off");
+      loadQ();
+    }
+
+    function loadQ() {
+      clearInterval(timer);
+      buildNodes();
+      const q = DATA[step];
+      document.getElementById("gPhase").innerText = "FASE: " + q.ph.toUpperCase();
+      document.getElementById("gPts").innerText = "PONTOS: " + score;
+      document.getElementById("gQuestion").innerText = (step + 1) + ". " + q.q;
+      document.getElementById("gNote").innerText = "";
+      document.getElementById("gNext").classList.add("off");
+
+      const box = document.getElementById("gChoices");
+      box.innerHTML = "";
+      q.o.forEach((opt, i) => {
+        const b = document.createElement("button");
+        b.className = "choice";
+        b.innerText = opt;
+        b.onclick = () => answer(i);
+        box.appendChild(b);
+      });
+
+      if (timed) {
+        sec = 15;
+        document.getElementById("gClock").innerText = "⏱️ 15s";
+        document.getElementById("gBar").style.width = "100%";
+        timer = setInterval(() => {
+          sec -= 0.1;
+          document.getElementById("gClock").innerText = "⏱️ " + Math.max(0, Math.ceil(sec)) + "s";
+          document.getElementById("gBar").style.width = Math.max(0, (sec / 15) * 100) + "%";
+          if (sec <= 0) {
+            clearInterval(timer);
+            answer(-1);
+          }
+        }, 100);
+      } else {
+        document.getElementById("gClock").innerText = "♾️ Livre";
+        document.getElementById("gBar").style.width = "100%";
+      }
+    }
+
+    function answer(idx) {
+      clearInterval(timer);
+      const q = DATA[step];
+      const btns = document.querySelectorAll(".choice");
+      btns.forEach(b => b.disabled = true);
+      if (idx === q.a) {
+        btns[idx].classList.add("win");
+        const bonus = timed ? Math.round(sec * 4) : 0;
+        score += q.pt + bonus;
+        playNote(698.46, 0.25, "triangle", 0.09);
+        document.getElementById("gNote").innerText = "✅ Nó comunitário conectado! (+" + (q.pt + bonus) + " pts) " + q.exp;
+      } else {
+        if (idx >= 0) btns[idx].classList.add("lose");
+        btns[q.a].classList.add("win");
+        playNote(175, 0.35, "sawtooth", 0.08);
+        document.getElementById("gNote").innerText = (idx === -1 ? "⏰ Tempo esgotado! " : "❌ Resposta incorreta. ") + q.exp;
+      }
+      document.getElementById("gPts").innerText = "PONTOS: " + score;
+      document.getElementById("gNext").classList.remove("off");
+    }
+
+    function nextStep() {
+      step++;
+      if (step === 3 || step === 6) {
+        document.getElementById("pGame").classList.add("off");
+        document.getElementById("pStage").classList.remove("off");
+        document.getElementById("stgHead").innerText = step === 3 ? "⚡ Fase 2: MÉDIO" : "🔥 Fase 3: DIFÍCIL";
+        document.getElementById("stgDesc").innerText = "Excelente conexão, " + player + "! Você acumulou " + score + " pontos na rede social!";
+        playNote(587.33, 0.3, "triangle", 0.09);
+      } else if (step < DATA.length) {
+        loadQ();
+      } else {
+        buildNodes();
+        showResult();
+      }
+    }
+
+    function goStage() {
+      document.getElementById("pStage").classList.add("off");
+      document.getElementById("pGame").classList.remove("off");
+      loadQ();
+    }
+
+    function showResult() {
+      document.getElementById("pGame").classList.add("off");
+      document.getElementById("pFinal").classList.remove("off");
+      playNote(880, 0.4, "triangle", 0.1);
+      const board = [
+        { n: player + " (Você)", s: score },
+        { n: "Embaixador Social", s: 1190 },
+        { n: "Conector Urbano", s: 770 },
+        { n: "Novato da Rede", s: 360 }
+      ].sort((a, b) => b.s - a.s);
+      const titles = ["🏆 1º LUGAR — CAMPEÃO", "🥈 2º LUGAR — VICE-CAMPEÃO", "🥉 3º LUGAR", "🏅 4º LUGAR"];
+      document.getElementById("fSummary").innerText = "Modo: " + (timed ? "Com Tempo (15s)" : "Sem Tempo (Livre)") + " • Pontuação: " + score + " pts";
+      document.getElementById("fPodium").innerHTML = board.map((p, i) =>
+        "<div class='pod-line " + (i === 0 ? "top" : "") + "'><span><strong>" + titles[i] + "</strong> — " + p.n + "</span><strong>" + p.s + " pts</strong></div>"
+      ).join("");
+    }
+  <\/script>
+</body>
+</html>`
+      },
+
+      4: {
+        id: 4,
+        fileName: "jogo4_saude_espiritual.html",
+        title: "4. Saúde Espiritual (AuraZen)",
+        activeClass: "bg-purple-500 text-white border-purple-300 shadow-lg shadow-purple-500/25",
+        inactiveClass: "bg-purple-950/50 text-purple-300 border-purple-700/60 hover:bg-purple-900/60",
+        html: `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <!-- =========================================================================
+       DISCIPLINA: 1º Ano — Programação de Jogos Digitais
+       TEMA: Saúde e Reabilitação — Jogo 4: Saúde Espiritual e Propósito Integral
+       ALUNO(A): Ariell Santana do Nascimento
+  ========================================================================== -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuraZen - Saúde Espiritual | Ariell Santana do Nascimento</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: radial-gradient(circle at center, #240c3d 0%, #0c0514 85%);
+      color: #faf5ff;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+    .sanctuary {
+      width: 100%;
+      max-width: 780px;
+      background: rgba(23, 10, 38, 0.94);
+      border: 2px solid #a855f7;
+      border-radius: 26px;
+      padding: 28px;
+      box-shadow: 0 0 42px rgba(168, 85, 247, 0.3);
+      text-align: center;
+    }
+    .aura-orb {
+      width: 66px;
+      height: 66px;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #f472b6, #7e22ce);
+      box-shadow: 0 0 26px #a855f7;
+      animation: pulse 2.5s infinite ease-in-out;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.13); }
+    }
+    h1 { font-family: Georgia, 'Times New Roman', serif; color: #e9d5ff; font-size: 1.82rem; margin-bottom: 8px; }
+    .sub-tag { color: #f472b6; font-size: 0.84rem; font-weight: bold; letter-spacing: 0.5px; margin-bottom: 14px; display: block; }
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #a855f7;
+      background: #0c0514;
+      color: #fff;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: bold;
+      margin: 14px 0;
+    }
+    .btn-zen {
+      background: linear-gradient(135deg, #a855f7, #f472b6);
+      color: #160424;
+      border: none;
+      padding: 13px 20px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: #e9d5ff;
+      border: 2px solid #c084fc;
+      padding: 11px 20px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .hud-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #120621;
+      padding: 10px 16px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+      border: 1px solid #6b21a8;
+    }
+    .bar-bg { height: 7px; background: #120621; border-radius: 99px; overflow: hidden; margin-bottom: 18px; }
+    .bar-fg { height: 100%; width: 100%; background: linear-gradient(90deg, #f472b6, #a855f7); transition: width 0.1s linear; }
+    .opt-zen {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: #1f0d36;
+      color: #f3e8ff;
+      border: 1px solid #7e22ce;
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin-bottom: 9px;
+      font-size: 0.94rem;
+      line-height: 1.35;
+      cursor: pointer;
+      transition: 0.18s;
+    }
+    .opt-zen:hover:not(:disabled) { border-color: #f472b6; background: #2e134f; }
+    .opt-zen.ok { background: #581c87; border-color: #f0abfc; font-weight: bold; }
+    .opt-zen.bad { background: #881337; border-color: #fda4af; }
+    /* Pódio Olímpico em Degraus Visuais (2º | 1º | 3º) + 4º Lugar */
+    .olympic {
+      display: grid;
+      grid-template-columns: 1fr 1.18fr 1fr;
+      gap: 10px;
+      align-items: end;
+      margin: 20px 0 12px;
+    }
+    .step-box {
+      background: #261042;
+      border: 1px solid #a855f7;
+      border-radius: 14px 14px 6px 6px;
+      padding: 12px 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+    }
+    .s1 { height: 162px; border: 2px solid #facc15; background: rgba(250, 204, 21, 0.15); }
+    .s2 { height: 130px; border-color: #cbd5e1; }
+    .s3 { height: 108px; border-color: #d97706; }
+    .s4 {
+      background: #170a26;
+      border: 1px solid #6b21a8;
+      padding: 11px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+      font-size: 0.92rem;
+    }
+    .hide { display: none; }
+  </style>
+</head>
+<body>
+  <main class="sanctuary">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;font-size:0.82rem;color:#d8b4fe;">
+      <span>✨ <strong>Ariell Santana do Nascimento</strong> • 1º Ano (Programação de Jogos Digitais)</span>
+      <button class="btn-ghost" style="padding:5px 10px;font-size:0.8rem;" id="sndBtn" onclick="toggleMusic()">🎵 Música (Ré Maior): ON</button>
+    </div>
+
+    <div id="sHome">
+      <div class="aura-orb"></div>
+      <span class="sub-tag">JOGO 4 • SAÚDE ESPIRITUAL & PROPÓSITO INTEGRAL</span>
+      <h1>AuraZen: Sentido & Harmonia</h1>
+      <p style="color:#e9d5ff;line-height:1.5;">Avance pelas fases <strong>Fácil</strong> (1–3), <strong>Médio</strong> (4–6) e <strong>Difícil</strong> (7–9) com alternativas <strong>A, B, C, D e E</strong> sobre propósito de vida, valores éticos, gratidão e cuidado integral.</p>
+      <input type="text" id="inpUser" value="Ariell Santana do Nascimento" maxlength="45">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <button class="btn-zen" onclick="startZen(true)">⏱️ Com Tempo (15s)</button>
+        <button class="btn-ghost" onclick="startZen(false)">♾️ Sem Tempo (Livre)</button>
+      </div>
+    </div>
+
+    <div id="sMid" class="hide" style="padding:26px 0;">
+      <div class="aura-orb"></div>
+      <h1 id="midHead"></h1>
+      <p id="midSub" style="margin:12px 0 20px;color:#e9d5ff;"></p>
+      <button class="btn-zen" style="width:100%;" onclick="goNextPhase()">Prosseguir Jornada ➡️</button>
+    </div>
+
+    <div id="sQuiz" class="hide">
+      <div class="hud-row">
+        <strong id="zPhase" style="color:#f472b6;">Fase: Fácil</strong>
+        <span id="zProg">1/9</span>
+        <strong id="zTime">⏱️ 15s</strong>
+        <strong id="zPts" style="color:#e9d5ff;">0 pts</strong>
+      </div>
+      <div class="bar-bg"><div class="bar-fg" id="zBar"></div></div>
+      <h2 id="zQuest" style="font-size:1.15rem;margin-bottom:16px;line-height:1.45;text-align:left;"></h2>
+      <div id="zOpts"></div>
+      <p id="zMsg" style="margin-top:10px;color:#f472b6;font-size:0.9rem;text-align:left;line-height:1.4;"></p>
+      <button class="btn-zen hide" id="zNext" style="width:100%;margin-top:12px;" onclick="nextZen()">Próxima Reflexão ➡️</button>
+    </div>
+
+    <div id="sEnd" class="hide">
+      <h1>🏆 Pódio Final — Saúde Espiritual</h1>
+      <p id="zFinal" style="color:#e9d5ff;margin-top:6px;"></p>
+      <div class="olympic" id="olympicBox"></div>
+      <div class="s4" id="fourthBox"></div>
+      <button class="btn-zen" style="width:100%;" onclick="location.reload()">🔄 Jogar Novamente</button>
+    </div>
+  </main>
+
+  <script>
+    const QLIST = [
+      { ph: "Fácil", pt: 100, q: "Como a 'Saúde Espiritual' é definida na visão integral da saúde?", o: ["A) Apenas seguir uma única religião", "B) Busca por propósito, sentido de vida, valores éticos e paz interior", "C) Somente exercícios musculares", "D) Acumular bens materiais", "E) Ignorar a medicina"], a: 1, exp: "Abrange valores, transcendência e sentido existencial, respeitando cada pessoa." },
+      { ph: "Fácil", pt: 100, q: "Qual benefício comprovado a prática diária da gratidão traz para a saúde?", o: ["A) Aumenta o ressentimento", "B) Reduz o estresse, melhora o humor e fortalece a resiliência emocional", "C) Causa insônia", "D) Diminui a empatia", "E) Nenhum efeito"], a: 1, exp: "Reconhecer aspectos positivos reduz o cortisol e amplia o bem-estar." },
+      { ph: "Fácil", pt: 100, q: "O que significa praticar 'Mindfulness' (Atenção Plena)?", o: ["A) Preocupar-se com o futuro", "B) Estar consciente no momento presente, com foco e sem julgamento", "C) Fazer dez tarefas sem atenção", "D) Remoer erros passados", "E) Dormir em aula"], a: 1, exp: "A atenção plena acalma a mente agitada e conecta com o presente." },
+      { ph: "Médio", pt: 150, q: "Como agir de acordo com valores éticos (honestidade, solidariedade) impacta o bem-estar?", o: ["A) Gera coerência interna, autoestima e paz de consciência", "B) Causa conflito moral", "C) Prejudica a digestão", "D) Impede o aprendizado", "E) Não influencia"], a: 0, exp: "Viver conforme os próprios princípios evita conflitos internos e fortalece a integridade." },
+      { ph: "Médio", pt: 150, q: "Na reabilitação de doenças crônicas ou traumas, qual é o papel da esperança e do propósito?", o: ["A) Nenhum impacto", "B) Aumentam a adesão ao tratamento e a força emocional para superar obstáculos", "C) Substituem a fisioterapia", "D) Fazem desistir do tratamento", "E) Aumentam a dor"], a: 1, exp: "Um propósito claro sustenta a motivação durante longos processos de recuperação." },
+      { ph: "Médio", pt: 150, q: "Por que momentos de silêncio e desconexão digital são importantes para o equilíbrio?", o: ["A) Favorecem o autoconhecimento e reduzem a sobrecarga mental", "B) Apagam a memória", "C) Aumentam a ansiedade", "D) Bloqueiam a criatividade", "E) Reduzem a oxigenação"], a: 0, exp: "Pausas contemplativas restauram a clareza mental e a serenidade." },
+      { ph: "Difícil", pt: 200, q: "O que propõe o modelo 'Biopsicossocial-Espiritual' reconhecido na saúde humanizada?", o: ["A) Tratar apenas o órgão doente", "B) Cuidar do ser humano de forma integral: corpo, mente, relações sociais e dimensão espiritual", "C) Eliminar exames", "D) Focar só em estética", "E) Ignorar o sofrimento"], a: 1, exp: "Integra todas as dimensões que compõem a dignidade humana." },
+      { ph: "Difícil", pt: 200, q: "Qual é o princípio central da 'Logoterapia', criada pelo psiquiatra Viktor Frankl?", o: ["A) Busca pelo poder financeiro", "B) A 'vontade de sentido': encontrar um propósito ajuda a superar adversidades", "C) Fuga das responsabilidades", "D) Isolamento social", "E) Negação das emoções"], a: 1, exp: "Para Viktor Frankl, a busca de sentido é a principal força motivadora humana." },
+      { ph: "Difícil", pt: 200, q: "Como a prática do perdão (soltar mágoas crônicas) beneficia a saúde integral?", o: ["A) Aumenta a pressão arterial", "B) Reduz ruminação mental, tensão cardiovascular e promove libertação emocional", "C) Significa concordar com erros", "D) Causa perda de memória", "E) Não tem base científica"], a: 1, exp: "Perdoar liberta o organismo do estresse crônico gerado pelo ressentimento." }
+    ];
+
+    let i = 0, pts = 0, timed = true, sec = 15, loop = null;
+    let ctx = null, bgm = null, on = true, uName = "Ariell Santana do Nascimento";
+
+    function tone(f, d, wave = "sine", vol = 0.045) {
+      if (!on) return;
+      if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if (ctx.state === "suspended") ctx.resume();
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = wave;
+      o.frequency.value = f;
+      g.gain.setValueAtTime(vol, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + d);
+      o.connect(g);
+      g.connect(ctx.destination);
+      o.start();
+      o.stop(ctx.currentTime + d);
+    }
+
+    function playAura() {
+      clearInterval(bgm);
+      const notes = [293.66, 369.99, 440.00, 587.33, 659.25, 587.33];
+      let s = 0;
+      bgm = setInterval(() => {
+        if (on) tone(notes[s++ % notes.length], 0.5, "sine", 0.045);
+      }, 460);
+    }
+
+    function toggleMusic() {
+      on = !on;
+      document.getElementById("sndBtn").innerText = on ? "🎵 Música (Ré Maior): ON" : "🔇 Música: OFF";
+    }
+
+    function startZen(isTimed) {
+      uName = document.getElementById("inpUser").value.trim() || "Ariell Santana do Nascimento";
+      timed = isTimed;
+      playAura();
+      document.getElementById("sHome").classList.add("hide");
+      document.getElementById("sQuiz").classList.remove("hide");
+      renderZen();
+    }
+
+    function renderZen() {
+      clearInterval(loop);
+      const item = QLIST[i];
+      document.getElementById("zPhase").innerText = "Fase: " + item.ph;
+      document.getElementById("zProg").innerText = (i + 1) + "/" + QLIST.length;
+      document.getElementById("zPts").innerText = pts + " pts";
+      document.getElementById("zQuest").innerText = (i + 1) + ". " + item.q;
+      document.getElementById("zMsg").innerText = "";
+      document.getElementById("zNext").classList.add("hide");
+
+      const box = document.getElementById("zOpts");
+      box.innerHTML = "";
+      item.o.forEach((opt, idx) => {
+        const b = document.createElement("button");
+        b.className = "opt-zen";
+        b.innerText = opt;
+        b.onclick = () => checkZen(idx);
+        box.appendChild(b);
+      });
+
+      if (timed) {
+        sec = 15;
+        document.getElementById("zTime").innerText = "⏱️ 15s";
+        document.getElementById("zBar").style.width = "100%";
+        loop = setInterval(() => {
+          sec -= 0.1;
+          document.getElementById("zTime").innerText = "⏱️ " + Math.max(0, Math.ceil(sec)) + "s";
+          document.getElementById("zBar").style.width = Math.max(0, (sec / 15) * 100) + "%";
+          if (sec <= 0) {
+            clearInterval(loop);
+            checkZen(-1);
+          }
+        }, 100);
+      } else {
+        document.getElementById("zTime").innerText = "♾️ Livre";
+        document.getElementById("zBar").style.width = "100%";
+      }
+    }
+
+    function checkZen(chosen) {
+      clearInterval(loop);
+      const item = QLIST[i];
+      const btns = document.querySelectorAll(".opt-zen");
+      btns.forEach(b => b.disabled = true);
+      if (chosen === item.a) {
+        btns[chosen].classList.add("ok");
+        const bonus = timed ? Math.round(sec * 4) : 0;
+        pts += item.pt + bonus;
+        tone(739.99, 0.35, "sine", 0.09);
+        document.getElementById("zMsg").innerText = "✅ Sabedoria alcançada! (+" + (item.pt + bonus) + " pts) " + item.exp;
+      } else {
+        if (chosen >= 0) btns[chosen].classList.add("bad");
+        btns[item.a].classList.add("ok");
+        tone(165, 0.35, "sawtooth", 0.08);
+        document.getElementById("zMsg").innerText = (chosen === -1 ? "⏰ Tempo esgotado! " : "❌ Resposta incorreta. ") + item.exp;
+      }
+      document.getElementById("zPts").innerText = pts + " pts";
+      document.getElementById("zNext").classList.remove("hide");
+    }
+
+    function nextZen() {
+      i++;
+      if (i === 3 || i === 6) {
+        document.getElementById("sQuiz").classList.add("hide");
+        document.getElementById("sMid").classList.remove("hide");
+        document.getElementById("midHead").innerText = i === 3 ? "⚡ Fase 2: MÉDIO" : "🔥 Fase 3: DIFÍCIL";
+        document.getElementById("midSub").innerText = "Parabéns, " + uName + "! Você conquistou " + pts + " pontos até aqui!";
+        tone(659.25, 0.35, "sine", 0.09);
+      } else if (i < QLIST.length) {
+        renderZen();
+      } else {
+        endZen();
+      }
+    }
+
+    function goNextPhase() {
+      document.getElementById("sMid").classList.add("hide");
+      document.getElementById("sQuiz").classList.remove("hide");
+      renderZen();
+    }
+
+    function endZen() {
+      document.getElementById("sQuiz").classList.add("hide");
+      document.getElementById("sEnd").classList.remove("hide");
+      tone(880, 0.45, "sine", 0.1);
+      const rank = [
+        { n: uName + " (Você)", s: pts },
+        { n: "Guardião da Aura", s: 1200 },
+        { n: "Sábio Astral", s: 780 },
+        { n: "Buscador Zen", s: 390 }
+      ].sort((a, b) => b.s - a.s);
+
+      document.getElementById("zFinal").innerText = "Modo: " + (timed ? "Com Tempo (15s)" : "Sem Tempo (Livre)") + " • Pontuação Final: " + pts + " pts";
+      document.getElementById("olympicBox").innerHTML =
+        "<div class='step-box s2'><strong>🥈 2º VICE</strong><small>" + rank[1].n + "</small><strong>" + rank[1].s + " pts</strong></div>" +
+        "<div class='step-box s1'><strong>🏆 1º CAMPEÃO</strong><small>" + rank[0].n + "</small><strong>" + rank[0].s + " pts</strong></div>" +
+        "<div class='step-box s3'><strong>🥉 3º LUGAR</strong><small>" + rank[2].n + "</small><strong>" + rank[2].s + " pts</strong></div>";
+      document.getElementById("fourthBox").innerHTML = "<strong>🏅 4º LUGAR:</strong> " + rank[3].n + " — <strong>" + rank[3].s + " pts</strong>";
+    }
+  <\/script>
+</body>
+</html>`
+      }
+    };
+
+    // =========================================================================
+    // ESTADO E CONTROLES DA CENTRAL INTERATIVA
+    // =========================================================================
+    let currentGameId = 1;
+    let toastTimer = null;
+
+    function showToast(msg) {
+      const banner = document.getElementById("toastBanner");
+      const text = document.getElementById("toastMessage");
+      text.textContent = msg;
+      banner.classList.remove("hidden", "toast-visible");
+      void banner.offsetWidth;
+      banner.classList.add("toast-visible");
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        banner.classList.add("hidden");
+      }, 3200);
+    }
+
+    function selectGame(gameId) {
+      currentGameId = gameId;
+      const game = GAMES[gameId];
+
+      // Atualiza estilos das 4 abas
+      [1, 2, 3, 4].forEach(id => {
+        const btn = document.getElementById("tab" + id);
+        const g = GAMES[id];
+        btn.className = "shrink-0 rounded-xl px-3 py-1.5 text-xs font-extrabold border transition cursor-pointer " +
+          (id === gameId ? g.activeClass : g.inactiveClass);
+      });
+
+      // Atualiza o conteúdo do modal se estiver aberto
+      document.getElementById("modalFileTitle").textContent = game.fileName + " — " + game.title;
+      document.getElementById("modalCodeArea").value = game.html;
+
+      // Renderiza o jogo completo ao vivo dentro do iframe
+      const frame = document.getElementById("liveGameFrame");
+      frame.srcdoc = game.html;
+    }
+
+    function copyActiveCode() {
+      const game = GAMES[currentGameId];
+      const code = game.html;
+
+      // Copia segura via textarea temporária + execCommand('copy') compatível com iFrame
+      const tempArea = document.createElement("textarea");
+      tempArea.value = code;
+      tempArea.setAttribute("readonly", "");
+      tempArea.style.position = "fixed";
+      tempArea.style.top = "-9999px";
+      tempArea.style.left = "-9999px";
+      document.body.appendChild(tempArea);
+      tempArea.select();
+      tempArea.setSelectionRange(0, code.length);
+
+      let copied = false;
+      try {
+        copied = document.execCommand("copy");
+      } catch (err) {
+        copied = false;
+      }
+      document.body.removeChild(tempArea);
+
+      if (!copied && navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).catch(() => {});
+      }
+
+      showToast("✅ Código copiado! (" + game.fileName + ")");
+    }
+
+    function downloadActiveCode() {
+      const game = GAMES[currentGameId];
+      const blob = new Blob([game.html], { type: "text/html;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = game.fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+      showToast("⬇️ Arquivo baixado: " + game.fileName);
+    }
+
+    function openCodeModal() {
+      const game = GAMES[currentGameId];
+      document.getElementById("modalFileTitle").textContent = game.fileName + " — " + game.title;
+      document.getElementById("modalCodeArea").value = game.html;
+      document.getElementById("codeModal").classList.remove("hidden");
+    }
+
+    function closeCodeModal() {
+      document.getElementById("codeModal").classList.add("hidden");
+    }
+
+    function selectModalTextarea() {
+      const area = document.getElementById("modalCodeArea");
+      area.focus();
+      area.select();
+      showToast("🎯 Todo o código HTML foi selecionado!");
+    }
+
+    // Fecha o modal ao clicar fora da caixa interna ou pressionar ESC
+    document.getElementById("codeModal").addEventListener("click", (e) => {
+      if (e.target.id === "codeModal") closeCodeModal();
+    });
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeCodeModal();
+    });
+
+    // Inicializa automaticamente no Jogo 1 ao carregar
+    window.onload = () => {
+      selectGame(1);
+    };
+  </script>
+</body>
+</html>
